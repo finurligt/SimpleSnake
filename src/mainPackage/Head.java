@@ -9,6 +9,9 @@ public class Head implements GameObject {
     int x,y;
     public static final int DOWN = 0;
     public static final int RIGHT = 1;
+    public static final int UP = 2;
+    public static final int LEFT = 3;
+
     int direction;
     public Head(int x, int y) {
         direction=RIGHT;

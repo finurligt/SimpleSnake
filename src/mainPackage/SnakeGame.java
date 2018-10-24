@@ -29,12 +29,23 @@ class SnakeGame implements Game {
 
     @Override
     public void handleKey(KeyEvent ke) {
-        System.out.println("hej");
         switch (ke.getKeyCode()) {
 
             case SparkyKeys.P1_DOWN : {
-                System.out.println("hej igen");
                 head.setDirection(Head.DOWN);
+                break;
+            }
+            case SparkyKeys.P1_RIGHT : {
+                head.setDirection(Head.RIGHT);
+                break;
+            }
+            case SparkyKeys.P1_LEFT : {
+                head.setDirection(Head.LEFT);
+                break;
+            }
+            case SparkyKeys.P1_UP : {
+                head.setDirection(Head.UP)
+                break;
             }
         }
     }
