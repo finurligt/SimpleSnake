@@ -44,7 +44,7 @@ class SnakeGame implements Game {
                 break;
             }
             case SparkyKeys.P1_UP : {
-                head.setDirection(Head.UP)
+                head.setDirection(Head.UP);
                 break;
             }
         }
