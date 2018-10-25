@@ -30,7 +30,7 @@ public class Window extends Canvas implements Runnable, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent ke) {
-
+        //System.out.println("HEJ");
         synchronized (this) {
             game.handleKey(ke);
         }

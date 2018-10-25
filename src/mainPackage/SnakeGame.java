@@ -1,5 +1,6 @@
 package mainPackage;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -10,11 +11,14 @@ class SnakeGame implements Game {
     LinkedList<GameObject> gameObjectsList;
     long prevTickTime;
     Head head;
+    int width,height;
 
-    public SnakeGame() {
+    public SnakeGame(int width,int height) {
         gameObjectsList = new LinkedList<GameObject>();
         prevTickTime=System.nanoTime();
-        head = new Head(0,0);
+        head = new Head(10,80);
+        this.width=width;
+        this.height=height;
     }
 
     @Override
@@ -24,6 +28,7 @@ class SnakeGame implements Game {
             tick();
             prevTickTime+=NANOS_IN_TICK;
         }
+        gameObjectsList.addFirst(new Background(new Color(134, 179, 0),width,height));
         return gameObjectsList;
     }
 
