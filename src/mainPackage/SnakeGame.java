@@ -12,13 +12,17 @@ class SnakeGame implements Game {
     long prevTickTime;
     Head head;
     int width,height;
+    int[][] map;
+    boolean gameOn;
 
     public SnakeGame(int width,int height) {
         gameObjectsList = new LinkedList<GameObject>();
         prevTickTime=System.nanoTime();
-        head = new Head(10,80);
+        head = new Head(10,80,map);
         this.width=width;
         this.height=height;
+        map = new int[20][11];
+        gameOn=false;
     }
 
     @Override
@@ -34,6 +38,7 @@ class SnakeGame implements Game {
 
     @Override
     public void handleKey(KeyEvent ke) {
+        gameOn=true;
         switch (ke.getKeyCode()) {
 
             case SparkyKeys.P1_DOWN : {
@@ -57,12 +62,36 @@ class SnakeGame implements Game {
 
 
     private void tick() {
-        head.tick();
-        LinkedList<GameObject> newList = new LinkedList<GameObject>();
-        newList.add(head);
-        gameObjectsList = newList;
-        System.out.println("tick");
+        if(gameOn) {
+            map = new int[20][11];
+            head.map=map;
+            head.tick();
+            LinkedList<GameObject> newList = new LinkedList<GameObject>();
+            newList.add(head);
+            gameObjectsList = newList;
 
+            if (head.x>19 || head.x<0 || head.y>10 || head.y<0) {
+                gameOver();
+                return;
+            }
+
+
+
+
+
+            switch (map[head.x][head.y]) {
+                case 1 :
+                    gameOver();
+                    break;
+
+            }
+        }
+
+    }
+
+    private void gameOver() {
+        gameObjectsList.addLast(new GameOver());
+        gameOn = false;
     }
 
 }

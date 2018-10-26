@@ -7,55 +7,67 @@ import java.util.LinkedList;
  * Created by Fabian on 2018-10-24.
  */
 public class Head implements GameObject {
-    int x,y;
+    int offsetX, offsetY;
     int gridSize;
+    int x = 0;
+    int y = 0;
     public static final int DOWN = 0;
     public static final int RIGHT = 1;
     public static final int UP = 2;
     public static final int LEFT = 3;
     LinkedList<BodyPart> body;
+    int[][] map;
 
     int direction;
-    public Head(int x, int y) {
+    public Head(int offsetX, int offsetY, int[][] map) {
         body = new LinkedList<BodyPart>();
         direction=RIGHT;
-        this.x=x;
-        this.y=y;
+        this.offsetX =offsetX;
+        this.offsetY =offsetY;
         gridSize=31;
+        this.map=map;
     }
 
     @Override
     public void render(Graphics g) {
         g.setColor(Color.BLUE);
-        g.fillRect(x,y,gridSize,gridSize);
+        g.fillRect(offsetX +(gridSize*x), offsetY + (y*gridSize),gridSize,gridSize);
         for(BodyPart b: body) {
             b.render(g);
+
         }
     }
 
     public void tick() {
         System.out.println("moving to "+ this.direction);
-        body.addFirst(new BodyPart(x,y,gridSize));
-        if(body.size()>3) {
+        body.addFirst(new BodyPart(x, y, offsetX, offsetY, gridSize));
+        if(body.size()>5) {
             body.removeLast();
+        }
+        for(BodyPart b: body) {
+            try {
+                map[b.x][b.y]=1;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                //handled in SnakeGame.tick()
+            }
         }
         switch (this.direction) {
             case DOWN : {
-                y+=gridSize;
+                y++;
                 //System.out.println();
                 break;
             }
 
             case RIGHT : {
-                x+=gridSize;
+                x++;
                 break;
             }
             case LEFT : {
-                x-=gridSize;
+                x--;
                 break;
             }
             case UP : {
-                y-=gridSize;
+                y--;
                 break;
             }
         }
