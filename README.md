@@ -5,10 +5,6 @@ TODO:
 
 High priority:
 
-Food
-
-Score
-
 Actual graphics
 
 
