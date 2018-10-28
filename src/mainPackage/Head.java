@@ -9,23 +9,27 @@ import java.util.LinkedList;
 public class Head implements GameObject {
     int offsetX, offsetY;
     int gridSize;
-    int x = 0;
-    int y = 0;
+    int x;
+    int y;
     public static final int DOWN = 0;
     public static final int RIGHT = 1;
     public static final int UP = 2;
     public static final int LEFT = 3;
+    int size;
     LinkedList<BodyPart> body;
     int[][] map;
 
     int direction;
-    public Head(int offsetX, int offsetY, int[][] map) {
+    public Head(int offsetX, int offsetY, int x, int y, int gridSize, int[][] map) {
         body = new LinkedList<BodyPart>();
         direction=RIGHT;
         this.offsetX =offsetX;
         this.offsetY =offsetY;
-        gridSize=31;
+        this.gridSize=gridSize;
         this.map=map;
+        this.x=x;
+        this.y=y;
+        size =1;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class Head implements GameObject {
     public void tick() {
         System.out.println("moving to "+ this.direction);
         body.addFirst(new BodyPart(x, y, offsetX, offsetY, gridSize));
-        if(body.size()>5) {
+        if(body.size()>size) {
             body.removeLast();
         }
         for(BodyPart b: body) {
@@ -76,5 +80,9 @@ public class Head implements GameObject {
     public void setDirection(int newDirection) {
         this.direction = newDirection;
         System.out.println("dir is "+direction);
+    }
+
+    public void eat() {
+        size++;
     }
 }
