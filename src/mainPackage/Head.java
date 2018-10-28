@@ -43,7 +43,6 @@ public class Head implements GameObject {
     }
 
     public void tick() {
-        System.out.println("moving to "+ this.direction);
         body.addFirst(new BodyPart(x, y, offsetX, offsetY, gridSize));
         if(body.size()>size) {
             body.removeLast();
@@ -79,7 +78,6 @@ public class Head implements GameObject {
 
     public void setDirection(int newDirection) {
         this.direction = newDirection;
-        System.out.println("dir is "+direction);
     }
 
     public void eat() {

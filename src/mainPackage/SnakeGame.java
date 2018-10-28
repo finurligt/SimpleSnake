@@ -9,7 +9,7 @@ import java.util.LinkedList;
 
 class SnakeGame implements Game {
 
-    final int NANOS_IN_TICK = 1000000000;
+    int nanosInTick = 1000000000;
     LinkedList<GameObject> gameObjectsList;
     long prevTickTime;
     Head head;
@@ -40,9 +40,9 @@ class SnakeGame implements Game {
     @Override
     public Collection<GameObject> getGraphics() {
         long timePassed = System.nanoTime() - prevTickTime;
-        if (timePassed>NANOS_IN_TICK) {
+        if (timePassed> nanosInTick) {
             tick();
-            prevTickTime+=NANOS_IN_TICK;
+            prevTickTime+= nanosInTick;
         }
 
         gameObjectsList.addFirst(new Background(new Color(134, 179, 0),width,height));
@@ -76,13 +76,7 @@ class SnakeGame implements Game {
         }
     }
 
-    private void startNewGame() {
-        head=new Head(OFFSET_X,OFFSET_Y,0,0,GRIDSIZE,map);
-        food=null;
-        score=0;
-        gameOn=true;
 
-    }
 
 
     private void tick() {
@@ -141,7 +135,18 @@ class SnakeGame implements Game {
     private void eat() {
         head.eat();
         food=null;
+        nanosInTick = (int)(((double)nanosInTick)*0.98);
+        System.out.println(nanosInTick);
         score++;
+    }
+
+    private void startNewGame() {
+        head=new Head(OFFSET_X,OFFSET_Y,0,0,GRIDSIZE,map);
+        food=null;
+        score=0;
+        gameOn=true;
+        nanosInTick = 1000000000;
+
     }
 
     private void gameOver() {
