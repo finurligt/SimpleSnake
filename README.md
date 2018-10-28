@@ -5,10 +5,6 @@ TODO:
 
 High priority:
 
-Make game board
-
-Collissons
-
 Food
 
 Score
