@@ -9,6 +9,7 @@ Actual graphics
 
 Adding new highscores
 
+Optimise Resource Loading
 
 
 
