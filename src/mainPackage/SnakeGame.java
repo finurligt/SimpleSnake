@@ -22,6 +22,11 @@ class SnakeGame implements Game {
     int score = 0;
     Font font;
     Food food = null;
+    int mode;
+    final int CREDITS = 0;
+    final int GAME_ON = 1;
+    final int HIGHSCORE = 2;
+
 
 
 
@@ -52,7 +57,10 @@ class SnakeGame implements Game {
 
     @Override
     public void handleKey(KeyEvent ke) {
-        if (!gameOn) {
+        if (mode==HIGHSCORE) {
+            startNewGame();
+        } else if (mode==CREDITS) {
+            //TODO
             startNewGame();
         }
         switch (ke.getKeyCode()) {
@@ -78,43 +86,57 @@ class SnakeGame implements Game {
 
 
 
-
+    HighScore highScore;
     private void tick() {
-        if(gameOn) {
-            LinkedList<GameObject> newList = new LinkedList<GameObject>();
-            map = new int[20][11];
-            head.map=map;
-            head.tick();
-
-            newList.add(head);
-
-
-
-
-            if (head.x>19 || head.x<0 || head.y>10 || head.y<0) {
-                gameOver();
-                return;
-            }
-
-
-
-
-
-
-
-            if (food==null) {
-                int foodX = (int)(Math.random()*map.length);
-                int foodY = (int)(Math.random()*map[0].length);
-                System.out.println("food at ("+ foodX + ", " + foodY + ").");
-
-                food = new Food(foodX,foodY,OFFSET_X,OFFSET_Y,GRIDSIZE);
-
-            }
-            map[food.x][food.y] = 2;
-            newList.addFirst(food);
-            gameObjectsList = newList;
-            gameObjectsList.addLast(new ScoreCounter(score,font));
+        System.out.println(mode);
+        switch (mode) {
+            case GAME_ON :
+                gameTick();
+                break;
+            case HIGHSCORE :
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    //skips game over screen
+                }
+                if (highScore==null) {
+                    highScore = new HighScore(font);
+                }
+                gameObjectsList=new LinkedList<GameObject>();
+                gameObjectsList.add(highScore);
+                break;
         }
+
+
+    }
+
+    private void gameTick() {
+        LinkedList<GameObject> newList = new LinkedList<GameObject>();
+        map = new int[20][11];
+        head.map=map;
+        head.tick();
+
+        newList.add(head);
+
+
+        if (head.x>19 || head.x<0 || head.y>10 || head.y<0) {
+            gameOver();
+            return;
+        }
+
+        if (food==null) {
+            int foodX = (int)(Math.random()*map.length);
+            int foodY = (int)(Math.random()*map[0].length);
+            System.out.println("food at ("+ foodX + ", " + foodY + ").");
+
+            food = new Food(foodX,foodY,OFFSET_X,OFFSET_Y,GRIDSIZE);
+
+        }
+        map[food.x][food.y] = 2;
+        newList.addFirst(food);
+        gameObjectsList = newList;
+        gameObjectsList.addLast(new ScoreCounter(score,font));
+
         try {
             switch (map[head.x][head.y]) {
                 case 1 :
@@ -129,7 +151,6 @@ class SnakeGame implements Game {
         } catch (ArrayIndexOutOfBoundsException e) {
             gameOver();
         }
-
     }
 
     private void eat() {
@@ -144,21 +165,24 @@ class SnakeGame implements Game {
         head=new Head(OFFSET_X,OFFSET_Y,0,0,GRIDSIZE,map);
         food=null;
         score=0;
-        gameOn=true;
+        mode=GAME_ON;
+        prevTickTime=System.nanoTime()-nanosInTick; //TODO think this trough lol, still a delay after highscores. might just sleep instead
         nanosInTick = 1000000000;
 
     }
 
     private void gameOver() {
         gameObjectsList.addLast(new GameOver());
-        gameOn = false;
+        mode=HIGHSCORE;
+
+
 
     }
 
     private Font fileToFont(String fileName) {
         File fontFile = new File(fileName);
         try {
-            return Font.createFont(Font.TRUETYPE_FONT, fontFile);
+            return Font.createFont(Font.TRUETYPE_FONT, fontFile).deriveFont(25F);
         } catch (FontFormatException e) {
             e.printStackTrace();
         } catch (IOException e) {
