@@ -3,14 +3,17 @@ package mainPackage;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Scanner;
 
-class SnakeGame implements Game {
+class SnakeGame extends Game {
 
     int nanosInTick = 1000000000;
     LinkedList<GameObject> gameObjectsList;
+    LinkedList<Score> highScores;
     long prevTickTime;
     Head head;
     int width,height;
@@ -25,7 +28,9 @@ class SnakeGame implements Game {
     int mode;
     final int CREDITS = 0;
     final int GAME_ON = 1;
-    final int HIGHSCORE = 2;
+    final int HIGH_SCORE = 2;
+    final int NEW_HIGH_SCORE = 3;
+    final int GAME_OVER = 4;
 
 
 
@@ -40,6 +45,7 @@ class SnakeGame implements Game {
         map = new int[20][11];
         gameOn=false;
         font = fileToFont("res/LCD_Solid.ttf");
+        highScores = readHighScore(new File("res/HighScore.txt"));
     }
 
     @Override
@@ -56,8 +62,9 @@ class SnakeGame implements Game {
     }
 
     @Override
-    public void handleKey(KeyEvent ke) {
-        if (mode==HIGHSCORE) {
+    public void keyTyped(KeyEvent ke) {
+        synchronized (this) { notifyAll(); }
+        if (mode== HIGH_SCORE) {
             startNewGame();
         } else if (mode==CREDITS) {
             //TODO
@@ -86,25 +93,35 @@ class SnakeGame implements Game {
 
 
 
-    HighScore highScore;
+    HighScore highScoreGraphic;
     private void tick() {
         System.out.println(mode);
         switch (mode) {
             case GAME_ON :
                 gameTick();
                 break;
-            case HIGHSCORE :
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    //skips game over screen
-                }
-                if (highScore==null) {
-                    highScore = new HighScore(font);
+            case HIGH_SCORE:
+
+
+
+                if (highScoreGraphic ==null) {
+                    highScoreGraphic = new HighScore(highScores,font);
                 }
                 gameObjectsList=new LinkedList<GameObject>();
-                gameObjectsList.add(highScore);
+                gameObjectsList.add(highScoreGraphic);
+                try {
+                    synchronized (this) { wait(3000); }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 break;
+            case GAME_OVER :
+                try {
+                    synchronized (this) { wait(3000); }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mode=HIGH_SCORE;
         }
 
 
@@ -173,7 +190,7 @@ class SnakeGame implements Game {
 
     private void gameOver() {
         gameObjectsList.addLast(new GameOver());
-        mode=HIGHSCORE;
+        mode= GAME_OVER;
 
 
 
@@ -189,6 +206,23 @@ class SnakeGame implements Game {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private LinkedList<Score> readHighScore(File scoreFile) { //TODO make highscore graphics read from this instead of the file
+        LinkedList<Score> result = new LinkedList<>();
+        Scanner sc = null;
+        try {
+            sc = new Scanner(scoreFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        while (sc.hasNextLine()) {
+            String[] split = sc.nextLine().split(" ");
+            Score score = new Score(split[0], Integer.parseInt(split[1]));
+            result.add(score);
+        }
+        System.out.println(result);
+        return result;
     }
 
 }

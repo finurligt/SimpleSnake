@@ -14,10 +14,10 @@ import java.util.Scanner;
 public class HighScore implements GameObject {
     Image img;
     File scoreFile;
-    LinkedList<String> highScores;
+    LinkedList<Score> highScores;
     Font font;
 
-    public HighScore(Font font) {
+    public HighScore(LinkedList<Score> highScores, Font font) {
         scoreFile = new File("res/HighScore.txt");
         this.font=font;
         try {
@@ -26,24 +26,12 @@ public class HighScore implements GameObject {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        highScores = readHighScores();
+        this.highScores = highScores;
 
 
     }
 
-    private LinkedList<String> readHighScores() {
-        LinkedList<String> highScores = new LinkedList<>();
-        Scanner sc = null;
-        try {
-            sc = new Scanner(scoreFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        while (sc.hasNextLine()) {   //TODO: maybe dont do this after every single game
-            highScores.add(sc.nextLine());
-        }
-        return highScores;
-    }
+
 
     @Override
     public void render(Graphics g) {
@@ -52,8 +40,9 @@ public class HighScore implements GameObject {
         g.drawImage(img,0,0,null);
         g.setColor(Color.black);
         g.setFont(font);
-        for (String s : highScores) {
-            g.drawString(s,120,y);
+        for (Score s : highScores) {
+            g.drawString(s.name,120,y);
+            g.drawString(Integer.toString(s.score),450,y);
             y=y+100;
         }
 
