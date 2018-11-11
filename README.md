@@ -7,10 +7,9 @@ TODO:
 
 Actual graphics
 
-Adding new highscores
+Optimise Resource Loading (maybe done?)
 
-Optimise Resource Loading
-
+Food stepping on snek
 
 
      Low priority:
@@ -18,9 +17,5 @@ Optimise Resource Loading
 Scalability
 
 Cred
-
-Might be some realtime bugs in case of button clicks
-
-Fix weird delay and possible bug in highscore screen
 
 MAJOR REFACTORING OF EVERYTHING LOL
