@@ -227,7 +227,7 @@ class SnakeGame extends Game {
     }
 
     private void startNewGame() {
-        head=new Head(OFFSET_X,OFFSET_Y,10,6,GRIDSIZE,map);
+        head=new Head(OFFSET_X,OFFSET_Y,10,5,GRIDSIZE,map);
         food=null;
         score=0;
         mode=GAME_ON;
