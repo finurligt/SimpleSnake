@@ -3,14 +3,18 @@ package mainPackage;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Scanner;
 
-class SnakeGame implements Game {
+class SnakeGame extends Game {
 
-    int nanosInTick = 1000000000;
+    int nanosInTick = 900000000;
     LinkedList<GameObject> gameObjectsList;
+    LinkedList<Score> highScores;
     long prevTickTime;
     Head head;
     int width,height;
@@ -25,9 +29,10 @@ class SnakeGame implements Game {
     int mode;
     final int CREDITS = 0;
     final int GAME_ON = 1;
-    final int HIGHSCORE = 2;
-
-
+    final int HIGH_SCORE = 2;
+    final int NEW_HIGH_SCORE = 3;
+    final int GAME_OVER = 4;
+    private NewHighScore newHighScore;
 
 
     public SnakeGame(int width,int height) {
@@ -40,6 +45,7 @@ class SnakeGame implements Game {
         map = new int[20][11];
         gameOn=false;
         font = fileToFont("res/LCD_Solid.ttf");
+        highScores = readHighScore(new File("res/HighScore.txt"));
     }
 
     @Override
@@ -56,58 +62,117 @@ class SnakeGame implements Game {
     }
 
     @Override
-    public void handleKey(KeyEvent ke) {
-        if (mode==HIGHSCORE) {
-            startNewGame();
-        } else if (mode==CREDITS) {
-            //TODO
-            startNewGame();
-        }
-        switch (ke.getKeyCode()) {
+    public void keyTyped(KeyEvent ke) {
+        switch (mode) {
+            case GAME_ON :
+                switch (ke.getKeyCode()) {
 
-            case SparkyKeys.P1_DOWN : {
-                head.setDirection(Head.DOWN);
+                    case SparkyKeys.P1_DOWN : {
+                        head.setDirection(Head.DOWN);
+                        break;
+                    }
+                    case SparkyKeys.P1_RIGHT : {
+                        head.setDirection(Head.RIGHT);
+                        break;
+                    }
+                    case SparkyKeys.P1_LEFT : {
+                        head.setDirection(Head.LEFT);
+                        break;
+                    }
+                    case SparkyKeys.P1_UP : {
+                        head.setDirection(Head.UP);
+                        break;
+                    }
+                }
                 break;
-            }
-            case SparkyKeys.P1_RIGHT : {
-                head.setDirection(Head.RIGHT);
+            case HIGH_SCORE :
+                startNewGame();
                 break;
-            }
-            case SparkyKeys.P1_LEFT : {
-                head.setDirection(Head.LEFT);
+            case CREDITS :
+                startNewGame();
                 break;
-            }
-            case SparkyKeys.P1_UP : {
-                head.setDirection(Head.UP);
+            case GAME_OVER :
+                mode=HIGH_SCORE;
                 break;
-            }
+            case NEW_HIGH_SCORE :
+                switch (ke.getKeyCode()) {
+                    case SparkyKeys.P1_DOWN :
+                        newHighScore.down();
+                        break;
+                    case SparkyKeys.P1_LEFT :
+                        newHighScore.left();
+                        break;
+                    case SparkyKeys.P1_RIGHT :
+                        newHighScore.right();
+                        break;
+                    case SparkyKeys.P1_UP :
+                        newHighScore.up();
+                        break;
+                    case SparkyKeys.P1_A :
+                        String nam = newHighScore.getName();
+                        if (nam.charAt(0)=='_') {break;}
+                        setNewHighScore(newHighScore.getName(),score);
+                        mode=HIGH_SCORE;
+                        break;
+
+
+                }
+                break;
         }
     }
 
+    private void setNewHighScore(String name, int score) {
+        for(int i = 0; i<3;i++) {
+            if (score>highScores.get(i).score) {
+                highScores.add(i,new Score(name,score));
+                highScores.removeLast();
+                break;
+            }
+        }
+        saveHighScores(highScores, "res/HighScore.txt");
+    }
+
+    private void saveHighScores(LinkedList<Score> highScores, String filePath) {
+        PrintWriter printer;
+        try {
+            printer = new PrintWriter(filePath);
+            for (Score score : highScores) {
+                printer.println(score.name+" "+score.score);
+            }
+            printer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
-    HighScore highScore;
+    }
+
+
+    HighScore highScoreGraphic;
+    long timer;
     private void tick() {
-        System.out.println(mode);
         switch (mode) {
             case GAME_ON :
                 gameTick();
                 break;
-            case HIGHSCORE :
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    //skips game over screen
-                }
-                if (highScore==null) {
-                    highScore = new HighScore(font);
+            case HIGH_SCORE:
+
+
+
+                if (highScoreGraphic ==null) {
+                    highScoreGraphic = new HighScore(highScores,font);
                 }
                 gameObjectsList=new LinkedList<GameObject>();
-                gameObjectsList.add(highScore);
+                gameObjectsList.add(highScoreGraphic);
+                if (System.currentTimeMillis()- timer >1000*3) mode=CREDITS;
                 break;
+            case GAME_OVER :
+                if (System.currentTimeMillis()- timer >1000*3) mode=HIGH_SCORE;
+                break;
+            case NEW_HIGH_SCORE :
+                gameObjectsList=new LinkedList<GameObject>();
+                gameObjectsList.add(newHighScore);
         }
-
-
     }
 
     private void gameTick() {
@@ -162,19 +227,24 @@ class SnakeGame implements Game {
     }
 
     private void startNewGame() {
-        head=new Head(OFFSET_X,OFFSET_Y,0,0,GRIDSIZE,map);
+        head=new Head(OFFSET_X,OFFSET_Y,10,6,GRIDSIZE,map);
         food=null;
         score=0;
         mode=GAME_ON;
         prevTickTime=System.nanoTime()-nanosInTick; //TODO think this trough lol, still a delay after highscores. might just sleep instead
-        nanosInTick = 1000000000;
+        nanosInTick = 900000000;
 
     }
 
     private void gameOver() {
         gameObjectsList.addLast(new GameOver());
-        mode=HIGHSCORE;
-
+        if(score<=highScores.getLast().score) {
+            mode= GAME_OVER;
+        } else {
+            newHighScore = new NewHighScore(score,font);
+            mode=NEW_HIGH_SCORE;
+        }
+        timer =System.currentTimeMillis(); //timer for the Game Over screen
 
 
     }
@@ -190,5 +260,24 @@ class SnakeGame implements Game {
         }
         return null;
     }
+
+    private LinkedList<Score> readHighScore(File scoreFile) { //TODO make highscore graphics read from this instead of the file
+        LinkedList<Score> result = new LinkedList<>();
+        Scanner sc = null;
+        try {
+            sc = new Scanner(scoreFile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        while (sc.hasNextLine()) {
+            String[] split = sc.nextLine().split(" ");
+            Score score = new Score(split[0], Integer.parseInt(split[1]));
+            result.add(score);
+        }
+        System.out.println(result);
+        sc.close();
+        return result;
+    }
+
 
 }
