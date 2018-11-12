@@ -123,6 +123,7 @@ public class Window extends Canvas implements Runnable, KeyListener {
         g.drawImage(img,0,0,this);
         g.dispose();
         bs.show();
+        img.flush();
 
     }
 

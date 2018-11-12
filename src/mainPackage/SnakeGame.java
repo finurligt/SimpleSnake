@@ -11,8 +11,8 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 class SnakeGame extends Game {
-
-    int nanosInTick = 900000000;
+    private ImageLoader il;
+    int nanosInTick = 800000000;
     LinkedList<GameObject> gameObjectsList;
     LinkedList<Score> highScores;
     long prevTickTime;
@@ -36,6 +36,9 @@ class SnakeGame extends Game {
 
 
     public SnakeGame(int width,int height) {
+        System.out.println("Loading resources");
+        ImageLoader.loadAll();
+        System.out.println("Starting game");
         gameObjectsList = new LinkedList<GameObject>();
         prevTickTime=System.nanoTime();
 
@@ -190,11 +193,7 @@ class SnakeGame extends Game {
         }
 
         if (food==null) {
-            int foodX = (int)(Math.random()*map.length);
-            int foodY = (int)(Math.random()*map[0].length);
-            System.out.println("food at ("+ foodX + ", " + foodY + ").");
-
-            food = new Food(foodX,foodY,OFFSET_X,OFFSET_Y,GRIDSIZE);
+            food=makeFood();
 
         }
         map[food.x][food.y] = 2;
@@ -209,13 +208,24 @@ class SnakeGame extends Game {
                     break;
                 case 2 :
                     eat();
-                    System.out.println("nomnom");
                     break;
 
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             gameOver();
         }
+    }
+
+    private Food makeFood() {
+        LinkedList<Tuple> positions= new LinkedList<Tuple>();
+        for(int x = 0; x<map.length;x++) {
+            for(int y = 0;y<map[0].length;y++) {
+                if(map[x][y]==0) positions.add(new Tuple(x,y));
+            }
+        }
+        int random = (int)(Math.random()*positions.size());
+        Tuple t = positions.get(random);
+        return new Food(t.x,t.y,OFFSET_X,OFFSET_Y,GRIDSIZE);
     }
 
     private void eat() {
@@ -232,7 +242,7 @@ class SnakeGame extends Game {
         score=0;
         mode=GAME_ON;
         prevTickTime=System.nanoTime()-nanosInTick; //TODO think this trough lol, still a delay after highscores. might just sleep instead
-        nanosInTick = 900000000;
+        nanosInTick = 800000000;
 
     }
 
@@ -274,10 +284,17 @@ class SnakeGame extends Game {
             Score score = new Score(split[0], Integer.parseInt(split[1]));
             result.add(score);
         }
-        System.out.println(result);
+        //System.out.println(result);
         sc.close();
         return result;
     }
 
 
+    private class Tuple {
+        int x,y;
+        public Tuple(int x, int y) {
+            this.x=x;
+            this.y=y;
+        }
+    }
 }

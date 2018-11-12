@@ -19,6 +19,8 @@ public class Head implements GameObject {
     LinkedList<BodyPart> body;
     int[][] map;
 
+
+
     int direction;
     public Head(int offsetX, int offsetY, int x, int y, int gridSize, int[][] map) {
         body = new LinkedList<BodyPart>();
@@ -35,7 +37,7 @@ public class Head implements GameObject {
     @Override
     public void render(Graphics g) {
         g.setColor(Color.BLUE);
-        g.fillRect(offsetX +(gridSize*x), offsetY + (y*gridSize),gridSize,gridSize);
+        g.drawImage(ImageLoader.getHead(),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
         for(BodyPart b: body) {
             b.render(g);
 

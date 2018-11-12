@@ -16,7 +16,7 @@ public class ScoreCounter implements GameObject {
     @Override
     public void render(Graphics g) {
         g.setFont(font);
-
+        g.setColor(Color.BLACK);
         g.drawString("Score: " + score,10,60);
     }
 }

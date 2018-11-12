@@ -17,7 +17,6 @@ public class BodyPart implements GameObject {
 
     @Override
     public void render(Graphics g) {
-        g.setColor(new Color(29,38,0));
-        g.fillRect(x* gridSize +offsetX,y* gridSize +offsetY, gridSize, gridSize);
+        g.drawImage(ImageLoader.getBodyHorizontal(),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
     }
 }
