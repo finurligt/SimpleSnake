@@ -9,8 +9,6 @@ Actual graphics
 
 Optimise Resource Loading (maybe done?)
 
-Food stepping on snek
-
 
      Low priority:
 
