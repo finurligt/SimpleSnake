@@ -42,7 +42,6 @@ public class Head implements GameObject {
             g.drawImage(ImageLoader.get(ImageLoader.HEAD_DOWN),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
         } else if (prevDirection==LEFT) {
             g.drawImage(ImageLoader.get(ImageLoader.HEAD_LEFT),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
-
         } else {
             g.drawImage(ImageLoader.get(ImageLoader.HEAD_UP),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
 
@@ -54,12 +53,45 @@ public class Head implements GameObject {
     }
 
     public void tick() {
-        prevDirection=this.direction;
-        if (direction==RIGHT||direction==LEFT) {
-            body.addFirst(new HorizontalBody(x, y, offsetX, offsetY, gridSize));
+
+        System.out.println("prevdir " + prevDirection);
+        System.out.println("dir " + direction);
+
+        if (prevDirection==RIGHT) {
+            if (direction==RIGHT||direction==LEFT) {
+                body.addFirst(new HorizontalBody(x, y, offsetX, offsetY, gridSize));
+            } else if (direction==DOWN) {
+                body.addFirst(new LeftDownBody(x, y, offsetX, offsetY, gridSize));
+            } else {
+                body.addFirst(new LeftUpBody(x, y, offsetX, offsetY, gridSize));
+            }
+        } else if (prevDirection==LEFT) {
+            if (direction==LEFT||direction==RIGHT) {
+                body.addFirst(new HorizontalBody(x, y, offsetX, offsetY, gridSize));
+            } else if (direction==DOWN) {
+                body.addFirst(new RightDownBody(x, y, offsetX, offsetY, gridSize));
+            } else {
+                body.addFirst(new RightUpBody(x, y, offsetX, offsetY, gridSize));
+            }
+        } else if (prevDirection==DOWN) {
+            if (direction==RIGHT) {
+                body.addFirst(new RightUpBody(x, y, offsetX, offsetY, gridSize));
+            } else if (direction==LEFT) {
+                body.addFirst(new LeftUpBody(x, y, offsetX, offsetY, gridSize));
+            } else {
+                body.addFirst(new VerticalBody(x, y, offsetX, offsetY, gridSize));
+            }
         } else {
-            body.addFirst(new VerticalBody(x, y, offsetX, offsetY, gridSize));
+            if (direction==RIGHT) {
+                body.addFirst(new RightDownBody(x, y, offsetX, offsetY, gridSize));
+            } else if (direction==LEFT) {
+                body.addFirst(new LeftDownBody(x, y, offsetX, offsetY, gridSize));
+            } else {
+                body.addFirst(new VerticalBody(x, y, offsetX, offsetY, gridSize));
+            }
         }
+            //body.addFirst(new VerticalBody(x, y, offsetX, offsetY, gridSize));
+
         if(body.size()>size) {
             body.removeLast();
         }
@@ -90,6 +122,7 @@ public class Head implements GameObject {
                 break;
             }
         }
+        prevDirection=this.direction;
     }
 
     public void setDirection(int newDirection) {

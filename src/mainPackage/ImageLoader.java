@@ -12,7 +12,11 @@ public class ImageLoader {
             HEAD_LEFT = "res/headLeft.gif",
             HEAD_DOWN = "res/headDown.gif",
             BODY_HORIZONTAL = "res/bodyHorizontal.gif",
-            BODY_VERTICAL = "res/bodyVertical.gif";
+            BODY_VERTICAL = "res/bodyVertical.gif",
+            BODY_LEFT_UP = "res/bodyLeftUp.gif",
+            BODY_RIGHT_UP = "res/bodyRightUp.gif",
+            BODY_RIGHT_DOWN = "res/bodyRightDown.gif",
+            BODY_LEFT_DOWN = "res/bodyLeftDown.gif";
     private static HashMap<String, Image> images = new HashMap<>();
 
     private ImageLoader() {

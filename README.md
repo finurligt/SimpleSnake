@@ -5,15 +5,16 @@ TODO:
 
       High priority:
 
-Actual graphics
+Fix tail graphics (prolly refactor the rendering part to just Bodypart with a prevDir and dir and therefore remove all subclasses)
 
-Optimise Resource Loading (maybe done?)
+Optimise Resource Loading (for background etc)
+
+Cred
 
 
      Low priority:
 
 Scalability
 
-Cred
 
-MAJOR REFACTORING OF EVERYTHING LOL
+
