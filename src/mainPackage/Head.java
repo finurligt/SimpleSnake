@@ -18,10 +18,9 @@ public class Head implements GameObject {
     int size;
     LinkedList<BodyPart> body;
     int[][] map;
-
-
-
     int direction;
+    int prevDirection;
+
     public Head(int offsetX, int offsetY, int x, int y, int gridSize, int[][] map) {
         body = new LinkedList<BodyPart>();
         direction=RIGHT;
@@ -37,7 +36,17 @@ public class Head implements GameObject {
     @Override
     public void render(Graphics g) {
         g.setColor(Color.BLUE);
-        g.drawImage(ImageLoader.getHead(),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
+        if (prevDirection==RIGHT) {
+            g.drawImage(ImageLoader.get(ImageLoader.HEAD_RIGHT),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
+        } else if (prevDirection==DOWN) {
+            g.drawImage(ImageLoader.get(ImageLoader.HEAD_DOWN),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
+        } else if (prevDirection==LEFT) {
+            g.drawImage(ImageLoader.get(ImageLoader.HEAD_LEFT),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
+
+        } else {
+            g.drawImage(ImageLoader.get(ImageLoader.HEAD_UP),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
+
+        }
         for(BodyPart b: body) {
             b.render(g);
 
@@ -45,7 +54,12 @@ public class Head implements GameObject {
     }
 
     public void tick() {
-        body.addFirst(new BodyPart(x, y, offsetX, offsetY, gridSize));
+        prevDirection=this.direction;
+        if (direction==RIGHT||direction==LEFT) {
+            body.addFirst(new HorizontalBody(x, y, offsetX, offsetY, gridSize));
+        } else {
+            body.addFirst(new VerticalBody(x, y, offsetX, offsetY, gridSize));
+        }
         if(body.size()>size) {
             body.removeLast();
         }

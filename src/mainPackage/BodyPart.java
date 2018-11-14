@@ -1,8 +1,6 @@
 package mainPackage;
 
-import java.awt.*;
-
-public class BodyPart implements GameObject {
+public abstract class BodyPart implements GameObject {
     int x,y;
     int gridSize;
     int offsetX,offsetY;
@@ -15,8 +13,5 @@ public class BodyPart implements GameObject {
         this.offsetY=offsetY;
     }
 
-    @Override
-    public void render(Graphics g) {
-        g.drawImage(ImageLoader.getBodyHorizontal(),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
-    }
+
 }

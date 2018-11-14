@@ -37,7 +37,6 @@ class SnakeGame extends Game {
 
     public SnakeGame(int width,int height) {
         System.out.println("Loading resources");
-        ImageLoader.loadAll();
         System.out.println("Starting game");
         gameObjectsList = new LinkedList<GameObject>();
         prevTickTime=System.nanoTime();

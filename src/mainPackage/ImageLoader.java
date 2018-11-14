@@ -4,54 +4,30 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class ImageLoader {
-    private static Image bodyHorizontal, bodyVertical, bodyTurnUpRigh, bodyTurnUpLeft,bodyTurnDownRight,bodyTurnDownLeft,head;
+    public static final String HEAD_RIGHT = "res/headRight.gif",
+            HEAD_UP = "res/headUp.gif",
+            HEAD_LEFT = "res/headLeft.gif",
+            HEAD_DOWN = "res/headDown.gif",
+            BODY_HORIZONTAL = "res/bodyHorizontal.gif",
+            BODY_VERTICAL = "res/bodyVertical.gif";
+    private static HashMap<String, Image> images = new HashMap<>();
+
     private ImageLoader() {
-
+        //prevent instance of this class
     }
 
-    public static void loadAll() {
-        try {
-            loadHead();
-            bodyHorizontal =ImageIO.read(new File("res/snakeBodyHoz.gif"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void loadHead() throws IOException {
-        head = ImageIO.read(new File("res/snakeHead.gif"));
-    }
-    private static void loadBodyHorizontal() throws IOException {
-        bodyHorizontal = ImageIO.read(new File("res/snakeBodHoz.gif"));
-    }
-
-    public static Image getBodyHorizontal() {
-        if(bodyHorizontal!=null) {
-            return bodyHorizontal;
-        }
-        else {
+    public static Image get(String key) {
+        if (!images.containsKey(key)) {
             try {
-                loadBodyHorizontal();
+                images.put(key, ImageIO.read(new File(key)));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return bodyHorizontal;
+        return images.get(key);
     }
 
-    public static Image getHead() {
-        if(head!=null) {
-            return head;
-        }
-        else {
-            try {
-                loadHead();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return head;
-    }
 }
