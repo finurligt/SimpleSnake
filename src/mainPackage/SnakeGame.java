@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 class SnakeGame extends Game {
     private ImageLoader il;
-    int nanosInTick = 800000000;
+    int nanosInTick = 700000000;
     LinkedList<GameObject> gameObjectsList;
     LinkedList<Score> highScores;
     long prevTickTime;
@@ -70,19 +70,19 @@ class SnakeGame extends Game {
                 switch (ke.getKeyCode()) {
 
                     case SparkyKeys.P1_DOWN : {
-                        head.setDirection(Head.DOWN);
+                        head.setDirection(Directions.DOWN);
                         break;
                     }
                     case SparkyKeys.P1_RIGHT : {
-                        head.setDirection(Head.RIGHT);
+                        head.setDirection(Directions.RIGHT);
                         break;
                     }
                     case SparkyKeys.P1_LEFT : {
-                        head.setDirection(Head.LEFT);
+                        head.setDirection(Directions.LEFT);
                         break;
                     }
                     case SparkyKeys.P1_UP : {
-                        head.setDirection(Head.UP);
+                        head.setDirection(Directions.UP);
                         break;
                     }
                 }
@@ -241,7 +241,7 @@ class SnakeGame extends Game {
         score=0;
         mode=GAME_ON;
         prevTickTime=System.nanoTime()-nanosInTick; //TODO think this trough lol, still a delay after highscores. might just sleep instead
-        nanosInTick = 800000000;
+        nanosInTick = 700000000;
 
     }
 

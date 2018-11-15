@@ -11,10 +11,6 @@ public class Head implements GameObject {
     int gridSize;
     int x;
     int y;
-    public static final int DOWN = 0;
-    public static final int RIGHT = 1;
-    public static final int UP = 2;
-    public static final int LEFT = 3;
     int size;
     LinkedList<BodyPart> body;
     int[][] map;
@@ -23,7 +19,7 @@ public class Head implements GameObject {
 
     public Head(int offsetX, int offsetY, int x, int y, int gridSize, int[][] map) {
         body = new LinkedList<BodyPart>();
-        direction=RIGHT;
+        direction=Directions.RIGHT;
         this.offsetX =offsetX;
         this.offsetY =offsetY;
         this.gridSize=gridSize;
@@ -36,11 +32,11 @@ public class Head implements GameObject {
     @Override
     public void render(Graphics g) {
         g.setColor(Color.BLUE);
-        if (prevDirection==RIGHT) {
+        if (prevDirection==Directions.RIGHT) {
             g.drawImage(ImageLoader.get(ImageLoader.HEAD_RIGHT),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
-        } else if (prevDirection==DOWN) {
+        } else if (prevDirection==Directions.DOWN) {
             g.drawImage(ImageLoader.get(ImageLoader.HEAD_DOWN),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
-        } else if (prevDirection==LEFT) {
+        } else if (prevDirection==Directions.LEFT) {
             g.drawImage(ImageLoader.get(ImageLoader.HEAD_LEFT),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
         } else {
             g.drawImage(ImageLoader.get(ImageLoader.HEAD_UP),offsetX +(gridSize*x), offsetY + (y*gridSize),null);
@@ -57,40 +53,7 @@ public class Head implements GameObject {
         System.out.println("prevdir " + prevDirection);
         System.out.println("dir " + direction);
 
-        if (prevDirection==RIGHT) {
-            if (direction==RIGHT||direction==LEFT) {
-                body.addFirst(new HorizontalBody(x, y, offsetX, offsetY, gridSize));
-            } else if (direction==DOWN) {
-                body.addFirst(new LeftDownBody(x, y, offsetX, offsetY, gridSize));
-            } else {
-                body.addFirst(new LeftUpBody(x, y, offsetX, offsetY, gridSize));
-            }
-        } else if (prevDirection==LEFT) {
-            if (direction==LEFT||direction==RIGHT) {
-                body.addFirst(new HorizontalBody(x, y, offsetX, offsetY, gridSize));
-            } else if (direction==DOWN) {
-                body.addFirst(new RightDownBody(x, y, offsetX, offsetY, gridSize));
-            } else {
-                body.addFirst(new RightUpBody(x, y, offsetX, offsetY, gridSize));
-            }
-        } else if (prevDirection==DOWN) {
-            if (direction==RIGHT) {
-                body.addFirst(new RightUpBody(x, y, offsetX, offsetY, gridSize));
-            } else if (direction==LEFT) {
-                body.addFirst(new LeftUpBody(x, y, offsetX, offsetY, gridSize));
-            } else {
-                body.addFirst(new VerticalBody(x, y, offsetX, offsetY, gridSize));
-            }
-        } else {
-            if (direction==RIGHT) {
-                body.addFirst(new RightDownBody(x, y, offsetX, offsetY, gridSize));
-            } else if (direction==LEFT) {
-                body.addFirst(new LeftDownBody(x, y, offsetX, offsetY, gridSize));
-            } else {
-                body.addFirst(new VerticalBody(x, y, offsetX, offsetY, gridSize));
-            }
-        }
-            //body.addFirst(new VerticalBody(x, y, offsetX, offsetY, gridSize));
+        body.addFirst(new BodyPart(x, y, offsetX, offsetY, gridSize,direction,prevDirection));
 
         if(body.size()>size) {
             body.removeLast();
@@ -103,25 +66,26 @@ public class Head implements GameObject {
             }
         }
         switch (this.direction) {
-            case DOWN : {
+            case Directions.DOWN : {
                 y++;
                 //System.out.println();
                 break;
             }
 
-            case RIGHT : {
+            case Directions.RIGHT : {
                 x++;
                 break;
             }
-            case LEFT : {
+            case Directions.LEFT : {
                 x--;
                 break;
             }
-            case UP : {
+            case Directions.UP : {
                 y--;
                 break;
             }
         }
+        body.getLast().tail=true;
         prevDirection=this.direction;
     }
 

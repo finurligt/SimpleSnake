@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class ImageLoader {
+
     public static final String HEAD_RIGHT = "res/headRight.gif",
             HEAD_UP = "res/headUp.gif",
             HEAD_LEFT = "res/headLeft.gif",
@@ -16,7 +17,13 @@ public class ImageLoader {
             BODY_LEFT_UP = "res/bodyLeftUp.gif",
             BODY_RIGHT_UP = "res/bodyRightUp.gif",
             BODY_RIGHT_DOWN = "res/bodyRightDown.gif",
-            BODY_LEFT_DOWN = "res/bodyLeftDown.gif";
+            BODY_LEFT_DOWN = "res/bodyLeftDown.gif",
+            TAIL_RIGHT = "res/tailRight.gif",
+            TAIL_LEFT = "res/tailLeft.gif",
+            TAIL_UP = "res/tailUp.gif",
+            TAIL_DOWN = "res/tailDown.gif";
+
+
     private static HashMap<String, Image> images = new HashMap<>();
 
     private ImageLoader() {
