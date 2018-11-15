@@ -12,7 +12,9 @@ import java.util.Scanner;
 
 class SnakeGame extends Game {
     private ImageLoader il;
-    int nanosInTick = 700000000;
+    int cred;
+    int START_NANOS_IN_TICK = 500000000;
+    int nanosInTick = START_NANOS_IN_TICK;
     LinkedList<GameObject> gameObjectsList;
     LinkedList<Score> highScores;
     long prevTickTime;
@@ -65,6 +67,9 @@ class SnakeGame extends Game {
 
     @Override
     public void keyTyped(KeyEvent ke) {
+        if (ke.getKeyCode()==SparkyKeys.CRED) {
+            addCred();
+        }
         switch (mode) {
             case GAME_ON :
                 switch (ke.getKeyCode()) {
@@ -85,13 +90,21 @@ class SnakeGame extends Game {
                         head.setDirection(Directions.UP);
                         break;
                     }
+                    case SparkyKeys.CRED : {
+                        addCred();
+                    }
                 }
                 break;
             case HIGH_SCORE :
-                startNewGame();
+                mode=CREDITS;
                 break;
             case CREDITS :
-                startNewGame();
+                if (ke.getKeyCode()==SparkyKeys.START1) {
+                    if (cred>0) {
+                        useCred();
+                        startNewGame();
+                    }
+                }
                 break;
             case GAME_OVER :
                 mode=HIGH_SCORE;
@@ -123,6 +136,14 @@ class SnakeGame extends Game {
         }
     }
 
+    private synchronized void addCred() {
+        cred++;
+        insertCredits.update(cred);
+    }
+    private synchronized void useCred() {
+        cred--;
+    }
+
     private void setNewHighScore(String name, int score) {
         for(int i = 0; i<3;i++) {
             if (score>highScores.get(i).score) {
@@ -152,6 +173,7 @@ class SnakeGame extends Game {
 
     HighScore highScoreGraphic;
     long timer;
+    InsertCredits insertCredits;
     private void tick() {
         switch (mode) {
             case GAME_ON :
@@ -169,11 +191,23 @@ class SnakeGame extends Game {
                 if (System.currentTimeMillis()- timer >1000*3) mode=CREDITS;
                 break;
             case GAME_OVER :
-                if (System.currentTimeMillis()- timer >1000*3) mode=HIGH_SCORE;
+                if (System.currentTimeMillis()- timer >1000*3) {
+                    mode=HIGH_SCORE;
+                    timer=System.currentTimeMillis();
+                }
                 break;
             case NEW_HIGH_SCORE :
-                gameObjectsList=new LinkedList<GameObject>();
-                gameObjectsList.add(newHighScore);
+                if (System.currentTimeMillis()- timer >1000*3) {
+                    gameObjectsList=new LinkedList<GameObject>();
+                    gameObjectsList.add(newHighScore);
+
+                }
+                break;
+            case CREDITS :
+                if (insertCredits==null) insertCredits = new InsertCredits(font);
+                insertCredits.update(cred);
+                gameObjectsList=new LinkedList<>();
+                gameObjectsList.add(insertCredits);
         }
     }
 
@@ -207,6 +241,7 @@ class SnakeGame extends Game {
                     break;
                 case 2 :
                     eat();
+                    gameObjectsList.removeFirst();
                     break;
 
             }
@@ -241,7 +276,7 @@ class SnakeGame extends Game {
         score=0;
         mode=GAME_ON;
         prevTickTime=System.nanoTime()-nanosInTick; //TODO think this trough lol, still a delay after highscores. might just sleep instead
-        nanosInTick = 700000000;
+        nanosInTick = START_NANOS_IN_TICK;
 
     }
 

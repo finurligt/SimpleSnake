@@ -18,7 +18,8 @@ public class Food implements GameObject {
 
     @Override
     public void render(Graphics g) {
-        g.setColor(new Color(29,38,0));
-        g.fillRect(x*gridSize+offsetX,y*gridSize+offsetY,gridSize,gridSize);
+        //g.setColor(new Color(29,38,0));
+        //g.fillRect(x*gridSize+offsetX,y*gridSize+offsetY,gridSize,gridSize);
+        g.drawImage(ImageLoader.get(ImageLoader.PEAR),x*gridSize+offsetX,y*gridSize+offsetY,null);
     }
 }

@@ -62,7 +62,7 @@ public class Head implements GameObject {
             try {
                 map[b.x][b.y]=1;
             } catch (ArrayIndexOutOfBoundsException e) {
-                //handled in SnakeGame.tick()
+                //handled in SnakeGame.update()
             }
         }
         switch (this.direction) {

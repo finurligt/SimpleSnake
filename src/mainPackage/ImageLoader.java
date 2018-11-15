@@ -21,7 +21,8 @@ public class ImageLoader {
             TAIL_RIGHT = "res/tailRight.gif",
             TAIL_LEFT = "res/tailLeft.gif",
             TAIL_UP = "res/tailUp.gif",
-            TAIL_DOWN = "res/tailDown.gif";
+            TAIL_DOWN = "res/tailDown.gif",
+            PEAR = "res/pear.gif";
 
 
     private static HashMap<String, Image> images = new HashMap<>();
