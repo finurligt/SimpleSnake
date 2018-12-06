@@ -5,11 +5,11 @@ TODO:
 
       High priority:
 
-Fix tail graphics (prolly refactor the rendering part to just Bodypart with a prevDir and dir and therefore remove all subclasses)
+Player 2
 
-Optimise Resource Loading (for background etc)
+Queue moves
 
-Cred
+Kan inte åka bakåt
 
 
      Low priority:
