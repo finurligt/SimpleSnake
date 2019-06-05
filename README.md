@@ -5,11 +5,11 @@ TODO:
 
       High priority:
 
-Player 2
+add Player 2 controls
 
 Queue moves
 
-Kan inte åka bakåt
+Remove ability to go backwards
 
 
      Low priority:
